@@ -1,40 +1,73 @@
-var container = document.querySelector(".container");
-const button = document.querySelector("button");
-var gridNumber = 16;
-createGrid(gridNumber);
-button.addEventListener("click", () => {
-  count = prompt("Enter the number of grids you want");
-  if (count === null) {
-    count = 16;
-  } else if (count < 1 || count > 100) {
-    alert("Enter a number between 1 and 100");
-    count = 16;
-  } else {
-    gridNumber = parseInt(count);
-    createGrid(gridNumber);
+var grid = document.querySelector(".grid");
+var pencil = document.querySelector("#pen-color");
+var gridNumber = document.querySelector("#grid-number");
+var drawingEnabled = true;
+
+var defaultFormat = document.querySelector("#default");
+var darkenFormat = document.querySelector("#darken");
+var randomizeFormat = document.querySelector("#randomize");
+
+function createGrid() {
+  grid.innerHTML = "";
+  let size = gridNumber.value;
+  let boxSize = grid.clientWidth / size;
+
+  for (let i = 0; i < size * size; i++) {
+    const div = document.createElement("div");
+    div.classList.add("box");
+    div.style.width = `${boxSize}px`;
+    div.style.height = `${boxSize}px`;
+    div.style.backgroundColor = "#fff";
+    div.dataset.colorValue = 0;
+    div.addEventListener("mouseover", () => {
+      if (drawingEnabled) {
+        if (darkenFormat.checked) {
+          darkenBox(div);
+        } else if (randomizeFormat.checked) {
+          randomizeColor(div);
+        } else if (defaultFormat.checked) {
+          div.style.backgroundColor = pencil.value;
+        }
+      }
+    });
+    grid.appendChild(div);
+  }
+}
+
+function clearGrid() {
+  const boxes = document.querySelectorAll(".box");
+  boxes.forEach((box) => {
+    box.style.backgroundColor = "#fff";
+    box.dataset.colorValue = 0;
+  });
+}
+
+function randomizeColor(box) {
+  // Generate a random RGB color
+  const randomRed = Math.floor(Math.random() * 256);
+  const randomGreen = Math.floor(Math.random() * 256);
+  const randomBlue = Math.floor(Math.random() * 256);
+
+  const randomColor = `rgb(${randomRed}, ${randomGreen}, ${randomBlue})`;
+  box.style.backgroundColor = randomColor;
+}
+
+function darkenBox(box) {
+  let currentColorValue = parseFloat(box.dataset.colorValue);
+  if (currentColorValue < 1) {
+    currentColorValue += 0.1;
+    box.dataset.colorValue = currentColorValue;
+    let darkenedColor = `rgba(0, 0, 0, ${currentColorValue})`;
+    box.style.backgroundColor = darkenedColor;
+  }
+}
+
+// Toggle drawing state when spacebar is pressed
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space") {
+    drawingEnabled = !drawingEnabled;
   }
 });
 
-function createGrid(gridNumber) {
-  container.innerHTML = "";
-
-  for (i = 0; i < gridNumber; i++) {
-    console.log("hello");
-    const grid = document.createElement("div");
-    grid.classList.add("grid");
-    for (j = 0; j < gridNumber; j++) {
-      const div = document.createElement("div");
-      div.classList.add("box");
-      div.style.backgroundColor = "white";
-      div.style.border = "1px solid black";
-      div.style.width = "30px";
-      div.style.height = "30px";
-      div.addEventListener("mouseover", () => {
-        div.style.backgroundColor = "black";
-      });
-
-      grid.appendChild(div);
-    }
-    container.appendChild(grid);
-  }
-}
+// Initialize the grid
+createGrid();

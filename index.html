@@ -9,10 +9,24 @@
 </head>
 
 <body>
-  <button>Create a grid</button>
-  <div class="container"></div>
-  <script src="script.js"></script>
+  <h1>Etch-a-Sketch</h1>
+  <div class="controls">
+    <button id="create" onclick="createGrid()">Create a grid</button>
+    <button id="clear" onclick="clearGrid()">Clear the grid</button>
+  </div>
 
+  <div class="label-container">
+    <input type="radio" id="default" name="pencil_format" value="Default" checked>
+    <label for="html">Default</label><br>
+    <input type="radio" id="randomize" name="pencil_format" value="Randomize">
+    <label for="html">Randomize</label><br>
+    <input type="radio" id="darken" name="pencil_format" value="Darken">
+    <label for="css">Darkening</label><br>
+    <input type="color" name="pen-color" id="pen-color">
+    <input id="grid-number" type="number" name="grid-size" min="1" max="100" value="16">
+  </div>
+  <div class="grid"></div>
+  <script src="script.js"></script>
 </body>
 
 </html>
